@@ -1,0 +1,100 @@
+---
+/**
+ * Floating WhatsApp button — primary mobile conversion channel.
+ * Number is a PLACEHOLDER in site.ts until the client provides it.
+ */
+import { whatsappUrl } from '../lib/site';
+---
+
+<a
+  class="wa-float"
+  href={whatsappUrl()}
+  target="_blank"
+  rel="noopener"
+  aria-label="Escríbenos por WhatsApp"
+>
+  <span class="wa-float__pulse" aria-hidden="true"></span>
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2a9.9 9.9 0 0 0-8.57 14.86L2 22l5.27-1.38A9.92 9.92 0 1 0 12.04 2Zm0 18.06a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.07.8.82-3-.2-.3a8.13 8.13 0 1 1 6.88 3.81Zm4.45-6.08c-.24-.12-1.44-.71-1.66-.79s-.39-.12-.55.12-.63.79-.77.95-.28.18-.53.06a6.65 6.65 0 0 1-1.95-1.2 7.3 7.3 0 0 1-1.35-1.68c-.14-.24 0-.37.1-.5s.25-.28.37-.43a1.66 1.66 0 0 0 .24-.4.45.45 0 0 0 0-.43c-.06-.12-.55-1.32-.75-1.81s-.4-.41-.55-.42h-.47a.9.9 0 0 0-.65.3 2.73 2.73 0 0 0-.85 2.03 4.74 4.74 0 0 0 1 2.52 10.88 10.88 0 0 0 4.16 3.68 14 14 0 0 0 1.39.51 3.35 3.35 0 0 0 1.53.1 2.5 2.5 0 0 0 1.64-1.16 2 2 0 0 0 .14-1.16c-.06-.1-.22-.16-.46-.28Z"/>
+  </svg>
+  <span class="wa-float__label">¿Hablamos?</span>
+</a>
+
+<style>
+  .wa-float {
+    position: fixed;
+    right: clamp(1rem, 3vw, 1.75rem);
+    bottom: clamp(1rem, 3vw, 1.75rem);
+    z-index: var(--z-overlay);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    background: var(--c-whatsapp);
+    color: #fff;
+    padding: 0.85rem;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  }
+
+  .wa-float:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 14px 36px rgba(37, 211, 102, 0.35);
+  }
+
+  /* Tooltip flotante a la izquierda del botón: no altera el layout
+     (cero CLS) y su fondo oscuro garantiza contraste AA. */
+  .wa-float__label {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    top: 50%;
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+    color: var(--c-text);
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border-strong);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transform: translateY(-50%) translateX(6px);
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+
+  .wa-float:hover .wa-float__label,
+  .wa-float:focus-visible .wa-float__label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* Pulso compositado: solo transform + opacity (sin repintados). */
+  .wa-float__pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid rgba(37, 211, 102, 0.6);
+    animation: wa-pulse 2.6s var(--ease-out) infinite;
+    pointer-events: none;
+  }
+
+  @keyframes wa-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    70%,
+    100% {
+      transform: scale(1.55);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-float__pulse {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,300 @@
+---
+/**
+ * Sticky glass header: placeholder logo (awaiting the real one),
+ * 4-item nav with active state and a persistent contact CTA.
+ */
+import { NAV, withBase } from '../lib/site';
+
+/** Normalise a path for active-link comparison (strip base + trailing /). */
+const strip = (p: string) => {
+  const noTrail = p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
+  return noTrail === '' ? '/' : noTrail;
+};
+const base = strip(withBase('/'));
+const current = strip(Astro.url.pathname);
+const isActive = (href: string) => {
+  const target = strip(withBase(href));
+  return href === '/' ? current === base || current === target : current === target;
+};
+---
+
+<header class="header" data-site-header>
+  <div class="container header__inner">
+    <a class="brand" href={withBase('/')} aria-label="Pharma Sports Labs — Inicio">
+      <!-- TODO: REEMPLAZAR por el logo real cuando el cliente lo entregue -->
+      <span class="brand__placeholder" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <g transform="rotate(45 16 16)">
+            <rect x="9" y="6" width="14" height="20" rx="7" stroke="var(--c-accent)" stroke-width="2.4"/>
+            <path d="M9 16a7 7 0 0 1 7-7h0a7 7 0 0 1 7 7v3a7 7 0 0 1-7 7h0a7 7 0 0 1-7-7z" fill="var(--c-brand)"/>
+          </g>
+        </svg>
+        <span class="brand__tag">REEMPLAZAR</span>
+      </span>
+      <span class="brand__name">PHARMA <em>SPORTS LABS</em></span>
+    </a>
+
+    <!-- El toggle va ANTES del nav en el DOM para que el orden de tabulación
+         siga al menú recién abierto. -->
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label="Abrir menú"
+    >
+      <span class="menu-toggle__bar" aria-hidden="true"></span>
+      <span class="menu-toggle__bar" aria-hidden="true"></span>
+      <span class="menu-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <nav class="nav" id="site-nav" aria-label="Navegación principal">
+      <ul class="nav__list" role="list">
+        {NAV.map((item) => (
+          <li>
+            <a
+              class="nav__link"
+              href={withBase(item.href)}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="btn btn--primary nav__cta" href={withBase('/contacto')}>Cotiza tu producto</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: rgba(var(--c-base-rgb), 0.62);
+    /* blur moderado: visualmente idéntico sobre #020205 y más barato en scroll */
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease-out),
+      background-color var(--dur) var(--ease-out);
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .header {
+      background: rgba(var(--c-base-rgb), 0.94);
+    }
+  }
+
+  .header.scrolled {
+    border-bottom-color: var(--c-border);
+    background: rgba(var(--c-base-rgb), 0.8);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    min-height: 4.5rem;
+  }
+
+  /* --- brand ------------------------------------------------- */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-3);
+    flex-shrink: 0;
+  }
+
+  .brand__placeholder {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 0.35rem 0.55rem;
+    border: 1px dashed var(--c-border-strong);
+    border-radius: var(--radius-sm);
+  }
+
+  .brand__tag {
+    font-family: var(--font-display);
+    font-size: 0.5625rem;
+    letter-spacing: var(--tracking-wide);
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+    padding: 0.12rem 0.3rem;
+    border-radius: 0.25rem;
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+    letter-spacing: var(--tracking-snug);
+    white-space: nowrap;
+  }
+
+  .brand__name em {
+    font-style: normal;
+    color: var(--c-accent);
+  }
+
+  /* --- nav ---------------------------------------------------- */
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-6);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+  }
+
+  .nav__link {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--c-text-muted);
+    padding-block: 0.4rem;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 2px;
+    background: var(--grad-accent);
+    border-radius: 2px;
+    transition: right var(--dur) var(--ease-out);
+  }
+
+  .nav__link:hover {
+    color: var(--c-text);
+  }
+
+  .nav__link:hover::after,
+  .nav__link[aria-current='page']::after {
+    right: 0;
+  }
+
+  .nav__link[aria-current='page'] {
+    color: var(--c-text);
+  }
+
+  .nav__cta {
+    padding-block: 0.6em;
+  }
+
+  /* --- mobile toggle ------------------------------------------ */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+  }
+
+  .menu-toggle__bar {
+    height: 2px;
+    width: 100%;
+    background: var(--c-text);
+    border-radius: 2px;
+    transition: transform var(--dur) var(--ease-out), opacity var(--dur) var(--ease-out);
+  }
+
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bar:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 860px) {
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--sp-4);
+      padding: var(--sp-5) var(--gutter) var(--sp-6);
+      background: rgba(var(--c-base-rgb), 0.97);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--c-border);
+      display: none;
+    }
+
+    .nav.open {
+      display: flex;
+    }
+
+    .nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .nav__link {
+      display: block;
+      padding: 0.85rem 0.25rem;
+      font-size: var(--fs-md);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .nav__link::after {
+      display: none;
+    }
+
+    .nav__cta {
+      justify-content: center;
+      margin-top: var(--sp-2);
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const close = () => {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+    };
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    });
+    // Close after choosing a destination (same-page anchors).
+    nav.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) close();
+    });
+    // Escape closes the menu and returns focus to the toggle.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        close();
+        toggle.focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,139 @@
+---
+/**
+ * Los 3 testimonios verbatim del sitio original. Avatares con
+ * iniciales (las fotos originales eran stock y se perdieron).
+ */
+const testimonios = [
+  {
+    quote:
+      'Gracias a Pharma Sports Labs ahora contamos con una línea de proteínas que refleja perfectamente la esencia de nuestra marca. Su servicio ha superado todas nuestras expectativas.',
+    name: 'Samantha Hernández',
+    company: 'Elite Supplements',
+    initials: 'SH',
+  },
+  {
+    quote:
+      'Gracias al arduo trabajo del equipo, nuestra empresa ahora cuenta con una línea de proteínas de última generación y un proceso de producción increíblemente eficiente. Su habilidad en la maquila de suplementos es innegable.',
+    name: 'Miguel Salamanca',
+    company: 'Vitality Vibe',
+    initials: 'MS',
+  },
+  {
+    quote:
+      'Tienen un equipo con gran conocimiento técnico, muy profesional y rápido para responder cualquier consulta. Han demostrado ser un socio de maquila excepcional para nosotros.',
+    name: 'Emma García',
+    company: 'NutriPro Performance',
+    initials: 'EG',
+  },
+];
+---
+
+<section class="section testimonios" aria-labelledby="testimonios-title">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Testimonios</p>
+      <h2 id="testimonios-title">Nuestro éxito, contado por nuestros clientes</h2>
+      <p class="lead">
+        Nuestros clientes comparten sus experiencias de transformación y crecimiento:
+        el verdadero testimonio de la calidad de nuestro servicio.
+      </p>
+    </div>
+
+    <ul class="testimonios__grid" role="list">
+      {testimonios.map((t, i) => (
+        <li class="testimonio" data-reveal style={`--reveal-i: ${i}`}>
+          <svg class="testimonio__mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 7H6.5A2.5 2.5 0 0 0 4 9.5v2A2.5 2.5 0 0 0 6.5 14H8v1a3 3 0 0 1-3 3v2a5 5 0 0 0 5-5V7Zm10 0h-3.5A2.5 2.5 0 0 0 14 9.5v2a2.5 2.5 0 0 0 2.5 2.5H18v1a3 3 0 0 1-3 3v2a5 5 0 0 0 5-5V7Z"/></svg>
+          <blockquote>
+            <p>{t.quote}</p>
+          </blockquote>
+          <footer class="testimonio__author">
+            <span class="testimonio__avatar" aria-hidden="true">{t.initials}</span>
+            <div>
+              <p class="testimonio__name">{t.name}</p>
+              <p class="testimonio__company">{t.company}</p>
+            </div>
+          </footer>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .testimonios .section-head {
+    margin-bottom: var(--sp-7);
+  }
+
+  .testimonios__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-4);
+  }
+
+  @media (max-width: 900px) {
+    .testimonios__grid {
+      grid-template-columns: 1fr;
+      max-width: 36rem;
+    }
+  }
+
+  .testimonio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding: var(--sp-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+
+  .testimonio:hover {
+    border-color: rgba(var(--c-accent-rgb), 0.4);
+    transform: translateY(-3px);
+  }
+
+  .testimonio__mark {
+    width: 28px;
+    height: 28px;
+    color: var(--c-brand);
+  }
+
+  .testimonio blockquote p {
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-normal);
+  }
+
+  .testimonio__author {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-top: auto;
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .testimonio__avatar {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-xs);
+    color: var(--c-on-accent);
+    background: linear-gradient(135deg, var(--c-brand), var(--c-cool));
+  }
+
+  .testimonio__name {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+  }
+
+  .testimonio__company {
+    color: var(--c-accent);
+    font-size: var(--fs-xs);
+  }
+</style>

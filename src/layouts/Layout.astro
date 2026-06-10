@@ -1,0 +1,152 @@
+---
+/**
+ * Base document layout — the shell every page renders into.
+ * Owns <head> (SEO, fonts, theme), the skip link, global CSS and the
+ * single site-wide interaction script (reveals, counters, header state).
+ */
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+// URLs hasheadas de los .woff2 latinos para precargarlos (LCP usa estas fuentes).
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import groteskLatinUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import { SITE, withBase } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path of the current page, e.g. "/servicios" — used for canonical/OG. */
+  path?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  path = '/',
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.tagline}`;
+const canonical = new URL(withBase(path), SITE.url).href;
+const favicon = withBase('/favicon.svg');
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta name="theme-color" content="#020205" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+
+    <!-- Preload de las fuentes latinas (las únicas que usa el contenido es-CO) -->
+    <link rel="preload" href={groteskLatinUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interLatinUrl} as="font" type="font/woff2" crossorigin />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Enables the .js-gated reveal styles before first paint (no FOUC). -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <slot name="head" />
+
+    <style>
+      /* Smooth cross-page fade in Chromium; instant nav elsewhere. */
+      @view-transition {
+        navigation: auto;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
+          animation-duration: 0s !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <slot />
+
+    <script>
+      // ---- Scroll reveals -------------------------------------------------
+      const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduced) {
+        revealEls.forEach((el) => el.classList.add('in'));
+      } else if (revealEls.length > 0) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.15, rootMargin: '0px 0px -8%' }
+        );
+        revealEls.forEach((el) => io.observe(el));
+      }
+
+      // ---- Animated counters ----------------------------------------------
+      // Markup contains the FINAL value (SEO/no-JS safe); we animate towards it.
+      const counters = document.querySelectorAll<HTMLElement>('[data-count-to]');
+      if (counters.length > 0 && !reduced) {
+        const animate = (el: HTMLElement) => {
+          const target = Number(el.dataset.countTo ?? '0');
+          const dur = 1600;
+          let start: number | null = null;
+          const step = (t: number) => {
+            if (start === null) start = t;
+            const p = Math.min((t - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = String(Math.round(target * eased));
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        };
+        const cio = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                animate(entry.target as HTMLElement);
+                cio.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.5 }
+        );
+        counters.forEach((el) => cio.observe(el));
+      }
+
+      // ---- Header scrolled state -------------------------------------------
+      const header = document.querySelector('[data-site-header]');
+      if (header) {
+        const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+---
+/**
+ * Preguntas frecuentes de maquila con <details> nativo (cero JS)
+ * + datos estructurados FAQPage para resultados enriquecidos.
+ */
+const faqs = [
+  {
+    q: '¿Cuál es el pedido mínimo de producción (MOQ)?',
+    a: 'Depende del formato del producto (polvos, cápsulas, tabletas o líquidos). Cuéntanos tu proyecto y te confirmamos el mínimo exacto junto con la cotización. También evaluamos lotes piloto pequeños para validar tu producto antes de escalar.',
+  },
+  {
+    q: '¿Me ayudan con el registro INVIMA de mi producto?',
+    a: 'Sí. Ofrecemos asesoría regulatoria y te acompañamos en el proceso de registro sanitario ante el INVIMA. Nuestro producto estrella cuenta con registro vigente (RSA-4014-2025), por lo que conocemos el trámite de primera mano.',
+  },
+  {
+    q: '¿Puedo fabricar con mi propia fórmula?',
+    a: 'Claro. Trabajamos con fórmulas propias del cliente mediante transferencia tecnológica, o desarrollamos una fórmula nueva contigo a través de nuestro servicio de definición de fórmulas e I+D.',
+  },
+  {
+    q: '¿Cuánto tarda la producción de un lote?',
+    a: 'Los tiempos varían según el formato y el volumen: tras aprobar el lote piloto, una producción típica toma entre 3 y 6 semanas. Te damos un cronograma detallado con tu cotización.',
+  },
+  {
+    q: '¿Qué tipos de productos pueden fabricar?',
+    a: 'Suplementos deportivos y nutricionales en distintos formatos: proteínas y polvos, cápsulas, tabletas y líquidos, con opciones de personalización de sabor, color y textura, además de envasado y etiquetado completos.',
+  },
+];
+
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+});
+---
+
+<section class="section faq" aria-labelledby="faq-title">
+  <div class="container container--narrow">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Preguntas frecuentes</p>
+      <h2 id="faq-title">Lo que toda marca quiere saber antes de maquilar</h2>
+    </div>
+
+    <div class="faq__list" data-reveal style="--reveal-i: 1">
+      {faqs.map((f) => (
+        <details class="faq__item" name="faq">
+          <summary>
+            <span>{f.q}</span>
+            <svg class="faq__chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="faq__answer">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline type="application/ld+json" set:html={jsonLd} />
+
+<style>
+  .faq .section-head {
+    margin-bottom: var(--sp-6);
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .faq__item {
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
+    background: var(--c-surface-2);
+    transition: border-color var(--dur) var(--ease-out);
+  }
+
+  .faq__item[open] {
+    border-color: rgba(var(--c-accent-rgb), 0.4);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    list-style: none;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__chevron {
+    flex-shrink: 0;
+    color: var(--c-accent);
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  .faq__item[open] .faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    padding: 0 var(--sp-5) var(--sp-5);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    max-width: 65ch;
+  }
+</style>

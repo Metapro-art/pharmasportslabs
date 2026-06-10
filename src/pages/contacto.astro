@@ -1,0 +1,405 @@
+---
+/**
+ * CONTACTO — formulario vía Web3Forms (sitio estático, sin backend).
+ * Estructura de campos tomada del formulario original (Wayback):
+ * nombre, empresa, email, teléfono, ciudad, país y proyecto.
+ */
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import PageHero from '../components/PageHero.astro';
+import { CONTACT, FORMS, SITE, whatsappUrl, withBase } from '../lib/site';
+
+/* Web3Forms redirige aquí tras un envío exitoso (URL absoluta de producción). */
+const gracias = new URL(withBase('/gracias'), SITE.url).href;
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Cra 27 C # 71-87, Barrio Alcázares, Bogotá')}`;
+
+const contactJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: `Contacto · ${SITE.name}`,
+  url: new URL(withBase('/contacto'), SITE.url).href,
+  mainEntity: {
+    '@type': 'Organization',
+    name: SITE.name,
+    email: CONTACT.email,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Cra 27 C # 71-87, Barrio Alcázares',
+      addressLocality: 'Bogotá',
+      addressCountry: 'CO',
+    },
+  },
+});
+---
+
+<Layout
+  title="Contacto"
+  description="Cotiza la maquila de tu suplemento deportivo. Escríbenos y te respondemos con una propuesta a la medida de tu marca. Bogotá, Colombia."
+  path="/contacto"
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={contactJsonLd} />
+  </Fragment>
+
+  <Header />
+
+  <main id="main">
+    <PageHero
+      eyebrow="Contacto"
+      title="Comencemos algo grandioso juntos"
+      accent="grandioso"
+    >
+      <p>
+        Cuéntanos sobre el producto que quieres maquilar y te respondemos con una
+        propuesta a la medida de tu marca.
+      </p>
+    </PageHero>
+
+    <section class="section contacto" aria-label="Formulario y datos de contacto">
+      <div class="container contacto__grid">
+        <!-- columna de datos -->
+        <div class="contacto__info">
+          <ul role="list">
+            <li class="info-card" data-reveal>
+              <span class="info-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 5.5L19.5 7"/></svg>
+              </span>
+              <div>
+                <h2>Correo electrónico</h2>
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              </div>
+            </li>
+            <li class="info-card" data-reveal style="--reveal-i: 1">
+              <span class="info-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 21s-7-5.1-7-11a7 7 0 1 1 14 0c0 5.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+              </span>
+              <div>
+                <h2>Dirección</h2>
+                <a href={mapsUrl} target="_blank" rel="noopener">
+                  {CONTACT.address}<span class="sr-only"> — se abre en una pestaña nueva</span>
+                </a>
+              </div>
+            </li>
+            <li class="info-card" data-reveal style="--reveal-i: 2">
+              <span class="info-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+              </span>
+              <div>
+                <h2>Horario</h2>
+                <p>{CONTACT.schedule}</p>
+              </div>
+            </li>
+            <li class="info-card" data-reveal style="--reveal-i: 3">
+              <span class="info-card__icon info-card__icon--wa" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.57 14.86L2 22l5.27-1.38A9.92 9.92 0 1 0 12.04 2Zm0 18.06a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.07.8.82-3-.2-.3a8.13 8.13 0 1 1 6.88 3.81Z"/></svg>
+              </span>
+              <div>
+                <h2>WhatsApp</h2>
+                <a href={whatsappUrl()} target="_blank" rel="noopener">
+                  Escríbenos directo<span class="sr-only"> — se abre en una pestaña nueva</span>
+                </a>
+                <p class="info-card__note">REEMPLAZAR · número pendiente</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- formulario -->
+        <div class="contacto__form-wrap" data-reveal style="--reveal-i: 1">
+          <form
+            class="form"
+            action={FORMS.endpoint}
+            method="POST"
+            id="formulario-pharmasportslabs"
+          >
+            <!-- Configuración Web3Forms -->
+            <input type="hidden" name="access_key" value={FORMS.web3formsKey} />
+            <input type="hidden" name="subject" value="Nueva solicitud de cotización — pharmasportslabs" />
+            <input type="hidden" name="from_name" value="Web Pharma Sports Labs" />
+            <input type="hidden" name="redirect" value={gracias} />
+            <!-- honeypot anti-spam -->
+            <input type="checkbox" name="botcheck" class="form__botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            <p class="form__demo-tag">
+              DEMO · Falta el access key gratuito de Web3Forms (src/lib/site.ts)
+            </p>
+            <p class="form__hint">
+              Los campos marcados con <span aria-hidden="true">*</span> son obligatorios.
+            </p>
+
+            <div class="form__row">
+              <div class="form__field">
+                <label for="f-nombre">Nombre <span aria-hidden="true">*</span></label>
+                <input id="f-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Ej: Juan Pérez" />
+              </div>
+              <div class="form__field">
+                <label for="f-empresa">Empresa</label>
+                <input id="f-empresa" name="empresa" type="text" autocomplete="organization" placeholder="Ej: Suplementos Andinos" />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="form__field">
+                <label for="f-email">Correo electrónico <span aria-hidden="true">*</span></label>
+                <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="Ej: juan@tumarca.com" />
+              </div>
+              <div class="form__field">
+                <label for="f-telefono">Teléfono / WhatsApp <span aria-hidden="true">*</span></label>
+                <input id="f-telefono" name="telefono" type="tel" required autocomplete="tel" placeholder="Ej: +57 300 123 4567" />
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="form__field">
+                <label for="f-ciudad">Ciudad</label>
+                <input id="f-ciudad" name="ciudad" type="text" autocomplete="address-level2" placeholder="Ej: Bogotá" />
+              </div>
+              <div class="form__field">
+                <label for="f-pais">País</label>
+                <input id="f-pais" name="pais" type="text" autocomplete="country-name" placeholder="Ej: Colombia" />
+              </div>
+            </div>
+
+            <div class="form__field">
+              <label for="f-mensaje">Tu proyecto <span aria-hidden="true">*</span></label>
+              <textarea
+                id="f-mensaje"
+                name="mensaje"
+                rows="5"
+                required
+                placeholder="Cuéntanos qué producto quieres maquilar: tipo de suplemento, formato y cantidades estimadas"></textarea>
+            </div>
+
+            <button class="btn btn--primary btn--lg form__submit" type="submit">
+              Enviar solicitud
+              <svg class="btn__arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 14-7-4 14-4-5-6-2Z"/></svg>
+            </button>
+            <p class="form__privacy">
+              Al enviar aceptas nuestros
+              <a href={withBase('/documentos/terminos-y-condiciones.pdf')} target="_blank" rel="noopener">
+                términos y condiciones (PDF)<span class="sr-only"> — se abre en una pestaña nueva</span>
+              </a>
+              y autorizas el tratamiento de tus datos personales para responder a tu solicitud.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <WhatsAppFloat />
+</Layout>
+
+<style>
+  .contacto__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .contacto__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* --- info cards ---------------------------------------------- */
+  .contacto__info ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .info-card {
+    display: flex;
+    gap: var(--sp-4);
+    align-items: flex-start;
+    padding: var(--sp-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+
+  .info-card:hover {
+    border-color: rgba(var(--c-accent-rgb), 0.4);
+    transform: translateY(-2px);
+  }
+
+  .info-card__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+    border: 1px solid rgba(var(--c-accent-rgb), 0.25);
+  }
+
+  .info-card__icon--wa {
+    color: var(--c-whatsapp);
+    background: rgba(37, 211, 102, 0.1);
+    border-color: rgba(37, 211, 102, 0.25);
+  }
+
+  .info-card h2 {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+  }
+
+  .info-card a,
+  .info-card p {
+    display: inline-block;
+    margin-top: var(--sp-2);
+    color: var(--c-text);
+    font-size: var(--fs-sm);
+  }
+
+  .info-card a:hover {
+    color: var(--c-accent);
+  }
+
+  .info-card__note {
+    font-family: var(--font-display);
+    font-size: 0.625rem !important;
+    letter-spacing: var(--tracking-wide);
+    color: var(--c-accent) !important;
+    background: var(--c-accent-soft);
+    border: 1px dashed var(--c-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.2rem 0.45rem;
+    margin-left: var(--sp-2);
+  }
+
+  /* --- form ------------------------------------------------------ */
+  .contacto__form-wrap {
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(var(--c-accent-rgb), 0.25);
+    background:
+      linear-gradient(150deg, rgba(var(--c-brand-rgb), 0.14), rgba(var(--c-brand-rgb), 0.02) 55%),
+      var(--c-surface-1);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .form__botcheck {
+    display: none;
+  }
+
+  .form__hint {
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+    margin-bottom: var(--sp-5);
+  }
+
+  .form__hint span {
+    color: var(--c-accent);
+  }
+
+  .form__demo-tag {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.625rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+    border: 1px dashed var(--c-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.6rem;
+    margin-bottom: var(--sp-5);
+  }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+  }
+
+  @media (max-width: 560px) {
+    .form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-4);
+  }
+
+  .form__field label {
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+  }
+
+  .form__field label span {
+    color: var(--c-accent);
+  }
+
+  .form__field input,
+  .form__field textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-border-strong);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--c-text);
+    font-size: var(--fs-sm);
+    transition: border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .form__field input::placeholder,
+  .form__field textarea::placeholder {
+    color: var(--c-text-faint);
+  }
+
+  .form__field input:hover,
+  .form__field textarea:hover {
+    border-color: rgba(var(--c-accent-rgb), 0.4);
+  }
+
+  .form__field input:focus-visible,
+  .form__field textarea:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 1px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .form__field textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .form__submit {
+    width: 100%;
+    margin-top: var(--sp-2);
+  }
+
+  .form__privacy {
+    margin-top: var(--sp-4);
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+  }
+
+  .form__privacy a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

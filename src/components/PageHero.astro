@@ -1,0 +1,103 @@
+---
+/**
+ * Hero compacto para páginas interiores: eyebrow + H1 (con palabra
+ * acentuada opcional) + lead, sobre el glow azul de la marca.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  /** Palabra/frase del título a resaltar con el degradado de marca. */
+  accent?: string;
+}
+
+const { eyebrow, title, accent } = Astro.props;
+
+/** Divide el título alrededor de la PRIMERA aparición del fragmento
+ *  acentuado (split() descartaría texto si apareciera dos veces). */
+const idx = accent ? title.indexOf(accent) : -1;
+const parts = accent && idx !== -1 ? [title.slice(0, idx), title.slice(idx + accent.length)] : null;
+---
+
+<section class="page-hero">
+  <div class="page-hero__noise" aria-hidden="true"></div>
+  <div class="container">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>
+      {parts ? (
+        <>
+          {parts[0]}<span class="text-gradient">{accent}</span>{parts[1]}
+        </>
+      ) : (
+        title
+      )}
+    </h1>
+    <div class="page-hero__lead">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem) clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+
+  .page-hero__noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  h1 {
+    position: relative;
+    margin-top: var(--sp-4);
+    font-size: var(--fs-3xl);
+    max-width: 22ch;
+  }
+
+  .page-hero__lead {
+    position: relative;
+    margin-top: var(--sp-5);
+    max-width: 56ch;
+  }
+
+  .page-hero__lead :global(p) {
+    font-size: var(--fs-md);
+    color: var(--c-text-muted);
+  }
+
+  /* entrada suave; el h1 (candidato LCP) solo se desliza */
+  .eyebrow,
+  h1,
+  .page-hero__lead {
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+
+  .page-hero__lead {
+    transition-delay: 120ms;
+  }
+
+  /* El h1 y el lead son candidatos a LCP: solo se deslizan (sin opacity). */
+  @starting-style {
+    .eyebrow {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    h1,
+    .page-hero__lead {
+      transform: translateY(14px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eyebrow,
+    h1,
+    .page-hero__lead {
+      transition: none;
+    }
+  }
+</style>

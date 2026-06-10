@@ -1,0 +1,211 @@
+---
+/**
+ * Site footer: brand + original quote, nav, contact data and the
+ * legal column (INVIMA registry + recovered T&C document).
+ */
+import { CONTACT, INVIMA, LEGAL, NAV, withBase } from '../lib/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <!-- TODO: REEMPLAZAR por el logo real -->
+        <span class="footer__logo" aria-hidden="true">
+          PHARMA <em>SPORTS LABS</em>
+          <span class="footer__logo-tag">LOGO · REEMPLAZAR</span>
+        </span>
+        <blockquote class="footer__quote">
+          <p>«De las cosas pequeñas surgen las cosas más grandes»</p>
+          <cite>— Anónimo</cite>
+        </blockquote>
+      </div>
+
+      <nav class="footer__col" aria-label="Navegación del pie">
+        <h2 class="footer__title">Navegación</h2>
+        <ul role="list">
+          {NAV.map((item) => (
+            <li><a class="footer__link" href={withBase(item.href)}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h2 class="footer__title">Información de contacto</h2>
+        <ul role="list">
+          <li class="footer__row">
+            <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7-5.1-7-11a7 7 0 1 1 14 0c0 5.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <span>{CONTACT.address}</span>
+          </li>
+          <li class="footer__row">
+            <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 5.5L19.5 7"/></svg>
+            <a class="footer__link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          </li>
+          <li class="footer__row">
+            <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+            <span>{CONTACT.schedule}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h2 class="footer__title">Información útil</h2>
+        <ul role="list">
+          <li>
+            <a class="footer__link" href={withBase(INVIMA.pdf)} download>
+              Registro INVIMA {INVIMA.registro} (PDF)
+            </a>
+          </li>
+          <li>
+            <a class="footer__link" href={withBase(LEGAL.terminosPdf)} target="_blank" rel="noopener">
+              Términos y condiciones (PDF)
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} PHARMA SPORTS LABS. Todos los derechos reservados.</p>
+      <a class="footer__top" href="#top">
+        Volver arriba
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--c-border);
+    background: var(--c-surface-1);
+    padding-block: var(--sp-8) var(--sp-5);
+    margin-top: var(--section-y);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 1.2fr 1fr;
+    gap: var(--sp-6);
+  }
+
+  @media (max-width: 900px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .footer__logo {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-md);
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .footer__logo em {
+    font-style: normal;
+    color: var(--c-accent);
+  }
+
+  .footer__logo-tag {
+    align-self: flex-start;
+    font-size: 0.5625rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--c-accent);
+    border: 1px dashed var(--c-border-strong);
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .footer__quote {
+    margin-top: var(--sp-5);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    max-width: 26ch;
+  }
+
+  .footer__quote cite {
+    display: block;
+    margin-top: var(--sp-2);
+    font-style: normal;
+    color: var(--c-text-faint);
+    font-size: var(--fs-xs);
+  }
+
+  .footer__title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--c-text);
+    margin-bottom: var(--sp-4);
+  }
+
+  .footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .footer__link {
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer__link:hover {
+    color: var(--c-accent);
+  }
+
+  .footer__row {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: flex-start;
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  .footer__icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--c-accent);
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+    border-top: 1px solid var(--c-border);
+    margin-top: var(--sp-7);
+    padding-top: var(--sp-5);
+    color: var(--c-text-faint);
+    font-size: var(--fs-xs);
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--c-text-muted);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer__top:hover {
+    color: var(--c-accent);
+  }
+</style>

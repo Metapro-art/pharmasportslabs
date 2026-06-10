@@ -1,0 +1,103 @@
+---
+/**
+ * Sección "Sobre nosotros" de la home: copy original + fotografía
+ * de laboratorio (stock libre, optimizada a WebP).
+ */
+import { withBase } from '../../lib/site';
+---
+
+<section class="section nosotros" aria-labelledby="nosotros-title">
+  <div class="container nosotros__grid">
+    <figure class="nosotros__media" data-reveal>
+      <img
+        src={withBase('/images/sobre-nosotros-lab.webp')}
+        alt="Especialista de laboratorio analizando una muestra en la planta de producción"
+        width="1200"
+        height="801"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption class="nosotros__badge">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 3h6m-5 0v5.2L4.6 17a3 3 0 0 0 2.6 4.5h9.6a3 3 0 0 0 2.6-4.5L14 8.2V3"/><path d="M7.5 14h9"/></svg>
+        I+D y control de calidad propios
+      </figcaption>
+    </figure>
+
+    <div class="nosotros__copy" data-reveal style="--reveal-i: 1">
+      <p class="eyebrow">Sobre nosotros</p>
+      <h2 id="nosotros-title">
+        Descubre el poder de la innovación y la tecnología en la producción de
+        suplementos deportivos
+      </h2>
+      <p class="lead">
+        Contamos con un equipo talentoso de especialistas en producción y calidad.
+        Superamos las expectativas utilizando tecnologías de vanguardia y estrategias
+        innovadoras en la maquila de productos nutricionales y suplementos deportivos.
+      </p>
+      <a class="btn btn--ghost nosotros__btn" href={withBase('/sobre-nosotros')}>
+        Conoce nuestra historia
+        <svg class="btn__arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nosotros__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    align-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .nosotros__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nosotros__media {
+    position: relative;
+  }
+
+  .nosotros__media img {
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--c-border-strong);
+    box-shadow: var(--shadow-lg), 0 0 80px rgba(var(--c-brand-rgb), 0.18);
+  }
+
+  .nosotros__badge {
+    position: absolute;
+    left: var(--sp-4);
+    bottom: var(--sp-4);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--c-text);
+    background: rgba(var(--c-base-rgb), 0.75);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--c-border-strong);
+  }
+
+  .nosotros__badge svg {
+    color: var(--c-accent);
+  }
+
+  .nosotros__copy h2 {
+    margin-top: var(--sp-4);
+  }
+
+  .nosotros__copy .lead {
+    margin-top: var(--sp-5);
+  }
+
+  .nosotros__btn {
+    margin-top: var(--sp-6);
+  }
+</style>

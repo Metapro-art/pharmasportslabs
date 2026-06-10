@@ -1,0 +1,254 @@
+---
+/**
+ * Capacidad y mínimos de producción — SIMULACRO solicitado por el
+ * cliente: tabla + gráfico de barras con datos de EJEMPLO, marcados
+ * como tales, listos para reemplazar por las cifras reales.
+ */
+const filas = [
+  { formato: 'Polvos y proteínas', moq: '500 unidades', entrega: '3 a 4 semanas', capacidad: 90 },
+  { formato: 'Cápsulas', moq: '1.000 frascos', entrega: '4 a 5 semanas', capacidad: 70 },
+  { formato: 'Tabletas', moq: '1.000 frascos', entrega: '4 a 6 semanas', capacidad: 55 },
+  { formato: 'Líquidos y geles', moq: '800 unidades', entrega: '5 a 6 semanas', capacidad: 40 },
+];
+---
+
+<section class="section capacidad" aria-labelledby="capacidad-title">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Capacidad de planta</p>
+      <h2 id="capacidad-title">Mínimos de producción y tiempos de entrega</h2>
+      <p class="lead">
+        Valores de referencia: los mínimos y tiempos definitivos se confirman en tu
+        cotización, según la fórmula y el formato de tu producto.
+      </p>
+      <!-- Nota interna para el cliente, en el mismo estilo del logo REEMPLAZAR -->
+      <p class="capacidad__demo-tag">
+        DEMO · Aquí ponemos y graficamos los datos reales de tu planta
+      </p>
+    </div>
+
+    <div class="capacidad__grid">
+      <div class="capacidad__table-wrap" data-reveal>
+        <table class="capacidad__table">
+          <caption class="sr-only">
+            Mínimos de producción y tiempos de entrega por formato (datos de ejemplo)
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Formato</th>
+              <th scope="col">Pedido mínimo</th>
+              <th scope="col">Entrega estimada</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filas.map((f) => (
+              <tr>
+                <th scope="row">{f.formato}</th>
+                <td>{f.moq}</td>
+                <td>{f.entrega}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="capacidad__note">
+          ¿Volúmenes menores o un formato distinto?
+          <a href="#cta-contacto">Cuéntanos tu caso</a>: evaluamos cada proyecto.
+        </p>
+      </div>
+
+      <div class="capacidad__chart" data-reveal style="--reveal-i: 1">
+        <p class="capacidad__chart-title">Capacidad mensual por formato</p>
+        <ul role="list">
+          {filas.map((f) => (
+            <li class="barra">
+              <span class="barra__label">{f.formato}</span>
+              <span class="barra__track">
+                <span class="barra__fill" style={`--w: ${f.capacidad}%`}></span>
+              </span>
+              <span class="barra__value">{f.capacidad}%</span>
+            </li>
+          ))}
+        </ul>
+        <p class="capacidad__chart-note">% de capacidad asignable · datos de ejemplo</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .capacidad .section-head {
+    margin-bottom: var(--sp-7);
+  }
+
+  .capacidad__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .capacidad__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* --- table --------------------------------------------------- */
+  .capacidad__table-wrap {
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    /* la tabla scrollea dentro de su tarjeta en pantallas angostas
+       en vez de empujar el ancho de toda la página */
+    overflow-x: auto;
+    background: var(--c-surface-1);
+  }
+
+  .capacidad__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+  }
+
+  .capacidad__table thead th {
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--c-accent);
+    padding: var(--sp-4) var(--sp-5);
+    border-bottom: 1px solid var(--c-border-strong);
+    background: rgba(var(--c-brand-rgb), 0.08);
+  }
+
+  .capacidad__table tbody th,
+  .capacidad__table tbody td {
+    padding: var(--sp-4) var(--sp-5);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .capacidad__table tbody tr:last-child th,
+  .capacidad__table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .capacidad__table tbody th {
+    text-align: left;
+    font-weight: var(--fw-semibold);
+    color: var(--c-text);
+  }
+
+  .capacidad__table tbody td {
+    color: var(--c-text-muted);
+  }
+
+  .capacidad__table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .capacidad__note {
+    padding: var(--sp-4) var(--sp-5);
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .capacidad__note a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* --- bar chart ------------------------------------------------ */
+  .capacidad__chart {
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    background: var(--c-surface-2);
+    padding: var(--sp-6);
+  }
+
+  .capacidad__chart-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    margin-bottom: var(--sp-5);
+  }
+
+  .capacidad__chart ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .barra {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.6fr) 1fr 3ch;
+    align-items: center;
+    gap: var(--sp-3);
+    font-size: var(--fs-xs);
+  }
+
+  .barra__label {
+    color: var(--c-text-muted);
+  }
+
+  .barra__track {
+    height: 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .barra__fill {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    border-radius: inherit;
+    background: var(--grad-accent);
+    box-shadow: 0 0 12px rgba(var(--c-accent-rgb), 0.4);
+    /* crece con transform (compositado), no con width (layout) */
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.1s var(--ease-out) 0.2s;
+  }
+
+  /* bars grow when the section reveals */
+  .capacidad__chart.in .barra__fill,
+  html:not(.js) .barra__fill {
+    transform: scaleX(1);
+  }
+
+  .barra__value {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    color: var(--c-text);
+    text-align: right;
+  }
+
+  .capacidad__chart-note {
+    margin-top: var(--sp-5);
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .barra__fill {
+      transition: none;
+      transform: scaleX(1);
+    }
+  }
+
+  .capacidad__demo-tag {
+    display: inline-block;
+    margin-top: var(--sp-4);
+    font-family: var(--font-display);
+    font-size: 0.625rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wide);
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+    border: 1px dashed var(--c-border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.6rem;
+  }
+</style>

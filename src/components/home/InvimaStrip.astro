@@ -1,0 +1,117 @@
+---
+/**
+ * Franja de confianza INVIMA: logo oficial, número de registro del
+ * producto estrella y botón para descargar el certificado PDF.
+ */
+import { INVIMA, withBase } from '../../lib/site';
+---
+
+<section class="invima" aria-label="Registro sanitario INVIMA">
+  <div class="container">
+    <div class="invima__card" data-reveal>
+      <div class="invima__brand">
+        <!-- Logo oficial sobre chip claro (sus colores requieren fondo claro) -->
+        <span class="invima__chip">
+          <img
+            src={withBase('/images/invima-logo.webp')}
+            alt="INVIMA — Instituto Nacional de Vigilancia de Medicamentos y Alimentos"
+            width="480"
+            height="141"
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
+      </div>
+      <div class="invima__divider" aria-hidden="true"></div>
+      <div class="invima__info">
+        <p class="invima__title">Registro Sanitario INVIMA</p>
+        <p class="invima__detail">
+          <strong>{INVIMA.registro}</strong>
+          <span> · Producto estrella: {INVIMA.producto}</span>
+        </p>
+      </div>
+      <a class="btn btn--ghost invima__btn" href={withBase(INVIMA.pdf)} download>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M5 19h14"/></svg>
+        Descargar registro sanitario (PDF)
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .invima {
+    padding-block: var(--sp-2) var(--sp-7);
+  }
+
+  .invima__card {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 1rem + 2vw, 2.5rem);
+    flex-wrap: wrap;
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem) clamp(1.25rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(var(--c-accent-rgb), 0.25);
+    background:
+      linear-gradient(110deg, rgba(var(--c-brand-rgb), 0.16), rgba(var(--c-brand-rgb), 0.04) 55%),
+      var(--c-surface-1);
+  }
+
+  .invima__chip {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.9rem;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .invima__chip img {
+    width: clamp(150px, 17vw, 200px);
+    height: auto;
+  }
+
+  .invima__divider {
+    width: 1px;
+    align-self: stretch;
+    background: var(--c-border-strong);
+  }
+
+  .invima__info {
+    flex: 1;
+    min-width: 16rem;
+  }
+
+  .invima__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+
+  .invima__detail {
+    margin-top: var(--sp-2);
+    color: var(--c-text-muted);
+  }
+
+  .invima__detail strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    letter-spacing: var(--tracking-snug);
+  }
+
+  .invima__btn {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 700px) {
+    .invima__divider {
+      display: none;
+    }
+    .invima__card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

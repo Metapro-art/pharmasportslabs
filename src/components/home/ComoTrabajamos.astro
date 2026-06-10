@@ -1,0 +1,133 @@
+---
+/**
+ * Timeline de proceso en 4 pasos — responde "¿qué pasa después de
+ * contactarlos?", la duda #1 de todo prospecto de maquila.
+ */
+const pasos = [
+  {
+    n: '01',
+    title: 'Contacto y brief',
+    text: 'Cuéntanos tu proyecto: tipo de producto, formato y objetivos de tu marca.',
+  },
+  {
+    n: '02',
+    title: 'Fórmula y propuesta',
+    text: 'Definimos la fórmula contigo y preparamos una propuesta a la medida de tu negocio.',
+  },
+  {
+    n: '03',
+    title: 'Lote piloto y validación',
+    text: 'Fabricamos un lote piloto, ajustamos el proceso y validamos calidad y estabilidad.',
+  },
+  {
+    n: '04',
+    title: 'Producción y entrega',
+    text: 'Escalamos a producción, envasamos, etiquetamos y entregamos tu producto terminado.',
+  },
+];
+---
+
+<section class="section proceso" aria-labelledby="proceso-title">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">Cómo trabajamos</p>
+      <h2 id="proceso-title">De la idea al producto terminado</h2>
+    </div>
+
+    <ol class="proceso__steps" role="list">
+      {pasos.map((p, i) => (
+        <li class="paso" data-reveal style={`--reveal-i: ${i}`}>
+          <span class="paso__num" aria-hidden="true">{p.n}</span>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proceso .section-head {
+    margin-bottom: var(--sp-7);
+  }
+
+  .proceso__steps {
+    --line-top: 4.4rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-5);
+    counter-reset: paso;
+    position: relative;
+  }
+
+  /* connecting line behind the numbers */
+  .proceso__steps::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--line-top) - 2.2rem);
+    left: 6%;
+    right: 6%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(var(--c-accent-rgb), 0.45) 12%,
+      rgba(var(--c-accent-rgb), 0.45) 88%,
+      transparent
+    );
+  }
+
+  @media (max-width: 900px) {
+    .proceso__steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .proceso__steps::before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .proceso__steps {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .paso {
+    position: relative;
+    padding: var(--sp-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-1);
+    transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+
+  .paso:hover {
+    border-color: rgba(var(--c-accent-rgb), 0.4);
+    transform: translateY(-3px);
+  }
+
+  .paso__num {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+    color: var(--c-on-accent);
+    background: var(--c-brand);
+    box-shadow: 0 0 0 5px rgba(var(--c-brand-rgb), 0.18), 0 0 24px rgba(var(--c-brand-rgb), 0.35);
+    margin-bottom: var(--sp-4);
+  }
+
+  .paso h3 {
+    font-size: var(--fs-md);
+  }
+
+  .paso p {
+    margin-top: var(--sp-2);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+  }
+</style>

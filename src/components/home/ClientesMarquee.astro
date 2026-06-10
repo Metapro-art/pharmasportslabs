@@ -1,0 +1,170 @@
+---
+/**
+ * Cinta de clientes en CSS puro (los logos originales se perdieron;
+ * usamos wordmarks estilizados).
+ * Accesibilidad: la lista real para lectores de pantalla es estática
+ * (sr-only); la cinta animada es decorativa (aria-hidden) y tiene
+ * botón de pausa visible (WCAG 2.2.2), además de pausa al hover.
+ */
+const clientes = ['Elite Supplements', 'Vitality Vibe', 'NutriPro Performance'];
+/* Repetimos la lista para que la cinta tenga cuerpo. */
+const track = [...clientes, ...clientes];
+---
+
+<section class="clientes" aria-labelledby="clientes-title">
+  <div class="container">
+    <h2 class="clientes__heading" id="clientes-title">
+      Socios en el éxito, <span class="text-gradient">juntos somos más fuertes</span>
+    </h2>
+    <ul class="sr-only" role="list">
+      {clientes.map((c) => <li>{c}</li>)}
+    </ul>
+  </div>
+
+  <div class="clientes__viewport" aria-hidden="true">
+    <div class="clientes__marquee" data-marquee>
+      <ul class="clientes__track" role="list">
+        {track.map((c) => (
+          <li class="clientes__item">{c}</li>
+        ))}
+      </ul>
+      <ul class="clientes__track" role="list">
+        {track.map((c) => (
+          <li class="clientes__item">{c}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container clientes__controls">
+    <button class="clientes__pause" type="button" aria-pressed="false" data-marquee-toggle>
+      <svg class="clientes__pause-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>
+      <span data-marquee-label>Pausar movimiento</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .clientes {
+    padding-block: var(--sp-7);
+    border-block: 1px solid var(--c-border);
+    background: var(--c-surface-1);
+    overflow: hidden;
+  }
+
+  .clientes__heading {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    text-align: center;
+    margin-bottom: var(--sp-6);
+  }
+
+  .clientes__marquee {
+    display: flex;
+    width: max-content;
+    /* sin gap aquí: el espaciado vive DENTRO de cada track para que
+       translateX(-50%) empalme sin salto */
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    animation: marquee 30s linear infinite;
+  }
+
+  .clientes__marquee:hover,
+  .clientes__marquee.paused {
+    animation-play-state: paused;
+  }
+
+  .clientes__track {
+    display: flex;
+    gap: var(--sp-6);
+    align-items: center;
+    padding-right: var(--sp-6);
+  }
+
+  .clientes__item {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-snug);
+    white-space: nowrap;
+    color: var(--c-text-faint);
+    text-transform: uppercase;
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .clientes__item:hover {
+    color: var(--c-accent);
+  }
+
+  .clientes__item::after {
+    content: '·';
+    margin-left: var(--sp-6);
+    color: var(--c-accent);
+    opacity: 0.6;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .clientes__controls {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--sp-5);
+  }
+
+  .clientes__pause {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    color: var(--c-text-muted);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-pill);
+    padding: 0.4rem 0.85rem;
+    transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .clientes__pause:hover {
+    color: var(--c-text);
+    border-color: var(--c-border-strong);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clientes__marquee {
+      animation: none;
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .clientes__track:last-child {
+      display: none;
+    }
+    .clientes__track {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .clientes__controls {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const marquee = document.querySelector<HTMLElement>('[data-marquee]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-marquee-toggle]');
+  const label = document.querySelector<HTMLElement>('[data-marquee-label]');
+  if (marquee && toggle && label) {
+    toggle.addEventListener('click', () => {
+      const paused = marquee.classList.toggle('paused');
+      toggle.setAttribute('aria-pressed', String(paused));
+      label.textContent = paused ? 'Reanudar movimiento' : 'Pausar movimiento';
+    });
+  }
+</script>

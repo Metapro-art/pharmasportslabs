@@ -1,0 +1,64 @@
+---
+/**
+ * HOME — Pharma Sports Labs.
+ * Composición completa de la página principal (Fase 2).
+ */
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import Hero from '../components/home/Hero.astro';
+import InvimaStrip from '../components/home/InvimaStrip.astro';
+import Compromiso from '../components/home/Compromiso.astro';
+import SobreNosotros from '../components/home/SobreNosotros.astro';
+import Servicios from '../components/home/Servicios.astro';
+import ComoTrabajamos from '../components/home/ComoTrabajamos.astro';
+import PorQueElegirnos from '../components/home/PorQueElegirnos.astro';
+import Capacidad from '../components/home/Capacidad.astro';
+import Testimonios from '../components/home/Testimonios.astro';
+import ClientesMarquee from '../components/home/ClientesMarquee.astro';
+import FAQ from '../components/home/FAQ.astro';
+import CTAContacto from '../components/home/CTAContacto.astro';
+import { CONTACT, SITE, withBase } from '../lib/site';
+
+const orgJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  url: new URL(withBase('/'), SITE.url).href,
+  email: CONTACT.email,
+  description: SITE.description,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Cra 27 C # 71-87, Barrio Alcázares',
+    addressLocality: 'Bogotá',
+    addressCountry: 'CO',
+  },
+});
+---
+
+<Layout path="/">
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={orgJsonLd} />
+  </Fragment>
+
+  <Header />
+
+  <main id="main">
+    <Hero />
+    <InvimaStrip />
+    <Compromiso />
+    <SobreNosotros />
+    <Servicios />
+    <ComoTrabajamos />
+    <PorQueElegirnos />
+    <Capacidad />
+    <Testimonios />
+    <ClientesMarquee />
+    <FAQ />
+    <CTAContacto />
+  </main>
+
+  <Footer />
+  <WhatsAppFloat />
+</Layout>

@@ -1,0 +1,177 @@
+---
+/**
+ * Las 6 tarjetas de servicios del original (copy completo, gramática
+ * corregida) en una rejilla con la primera tarjeta destacada.
+ */
+import { withBase } from '../../lib/site';
+
+const servicios = [
+  {
+    title: 'Desarrollo de productos',
+    text: 'Creamos productos eficaces y seguros: I+D, formulación, cumplimiento regulatorio y mejora continua a partir de la retroalimentación de tu mercado.',
+    icon: 'M9 3h6m-5 0v5.2L4.6 17a3 3 0 0 0 2.6 4.5h9.6a3 3 0 0 0 2.6-4.5L14 8.2V3M7.5 14h9',
+    featured: true,
+  },
+  {
+    title: 'Fabricación de lotes piloto',
+    text: 'Producimos pequeñas cantidades para ajustar formulaciones, procesos y calidad, garantizando estándares antes de la producción masiva.',
+    icon: 'M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7ZM3.3 7l8.7 5 8.7-5M12 22V12',
+  },
+  {
+    title: 'Transferencia tecnológica',
+    text: 'Movemos conocimientos y recursos entre organizaciones para mejorar productos, procesos e impulsar la innovación.',
+    icon: 'M7 16V4m0 0L3 8m4-4 4 4m6 0v12m0 0 4-4m-4 4-4-4',
+  },
+  {
+    title: 'Estudios de estabilidad',
+    text: 'Evaluamos cómo un producto mantiene su calidad, seguridad y características a lo largo del tiempo.',
+    icon: 'M3 12a9 9 0 1 0 9-9m-9 9 3-3m-3 3-3-3m12-2v5l3.5 2',
+  },
+  {
+    title: 'Definición de fórmulas',
+    text: 'Creamos combinaciones precisas de ingredientes para asegurar eficacia, seguridad y cumplimiento normativo en suplementos.',
+    icon: 'M6 3h12M9 3v6.3a2 2 0 0 1-.6 1.4L4 15.2A4 4 0 0 0 6.8 22h10.4a4 4 0 0 0 2.8-6.8L15.6 10.7a2 2 0 0 1-.6-1.4V3m-5 11h4',
+  },
+  {
+    title: 'Validación de manufactura',
+    text: 'Verificamos que los métodos de producción cumplan con los estándares de calidad, garantizando la consistencia de cada lote.',
+    icon: 'M12 2 4.5 5v6c0 5 3.2 8.8 7.5 11 4.3-2.2 7.5-6 7.5-11V5L12 2Zm-3 10 2.2 2.2L15.5 10',
+  },
+];
+---
+
+<section class="section servicios" aria-labelledby="servicios-title">
+  <div class="container">
+    <div class="servicios__head" data-reveal>
+      <div>
+        <p class="eyebrow">Nuestros servicios</p>
+        <h2 id="servicios-title">
+          Soluciones de producción personalizadas para tu negocio
+        </h2>
+      </div>
+      <p class="lead">
+        Desarrollamos soluciones a la medida en el ámbito de los suplementos y
+        productos nutricionales. Creemos que una sana nutrición puede transformar
+        vidas: somos tu socio estratégico, no solo una empresa de maquila.
+      </p>
+    </div>
+
+    <ul class="servicios__grid" role="list">
+      {servicios.map((s, i) => (
+        <li
+          class:list={['servicio', { 'servicio--featured': s.featured }]}
+          data-reveal
+          style={`--reveal-i: ${i % 3}`}
+        >
+          <span class="servicio__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+          </span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="servicios__cta" data-reveal>
+      <a class="btn btn--primary" href={withBase('/servicios')}>
+        Explora todos los servicios
+        <svg class="btn__arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .servicios__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+    align-items: end;
+    margin-bottom: var(--sp-7);
+  }
+
+  @media (max-width: 860px) {
+    .servicios__head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .servicios__head h2 {
+    margin-top: var(--sp-4);
+  }
+
+  .servicios__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-4);
+  }
+
+  @media (max-width: 980px) {
+    .servicios__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .servicios__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .servicio {
+    position: relative;
+    padding: var(--sp-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+    transition: border-color var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
+    overflow: hidden;
+  }
+
+  .servicio:hover {
+    border-color: rgba(var(--c-accent-rgb), 0.45);
+    background: var(--c-surface-3);
+    transform: translateY(-4px);
+  }
+
+  .servicio--featured {
+    background:
+      linear-gradient(140deg, rgba(var(--c-brand-rgb), 0.22), rgba(var(--c-brand-rgb), 0.04) 60%),
+      var(--c-surface-2);
+    border-color: rgba(var(--c-accent-rgb), 0.3);
+  }
+
+  .servicio__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    color: var(--c-accent);
+    background: var(--c-accent-soft);
+    border: 1px solid rgba(var(--c-accent-rgb), 0.25);
+    margin-bottom: var(--sp-5);
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  .servicio:hover .servicio__icon {
+    transform: scale(1.08) rotate(-4deg);
+  }
+
+  .servicio h3 {
+    font-size: var(--fs-md);
+  }
+
+  .servicio p {
+    margin-top: var(--sp-3);
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  .servicios__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--sp-7);
+  }
+</style>
